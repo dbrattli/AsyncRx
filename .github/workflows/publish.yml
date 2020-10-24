@@ -18,6 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.402
 
+    - name: Setup paket
+      run: dotnet tool install Paket
     - name: Dotnet Pack
       run: dotnet pack -c release -p:PackageVersion=${GITHUB_REF##*/v}
 

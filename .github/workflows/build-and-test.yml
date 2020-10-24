@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.402
+    - name: Setup paket
+      run: dotnet tool install Paket
     - name: Install dependencies
       run: dotnet restore
     - name: Build
