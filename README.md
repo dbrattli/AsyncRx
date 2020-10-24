@@ -1,7 +1,7 @@
 # FSharp.Control.AsyncRx
 
 ![Build and Test](https://github.com/dbrattli/AsyncRx/workflows/Build%20and%20Test/badge.svg)
-[![codecov](https://codecov.io/gh/dbrattli/AsyncRx/branch/master/graph/badge.svg)](https://codecov.io/gh/dbrattli/AsyncRx)
+[![codecov](https://codecov.io/gh/dbrattli/AsyncRx/branch/main/graph/badge.svg)](https://codecov.io/gh/dbrattli/AsyncRx)
 [![Nuget](https://img.shields.io/nuget/vpre/FSharp.Control.AsyncRx)](https://www.nuget.org/packages/FSharp.Control.AsyncRx/)
 
 > FSharp.Control.AsyncRx is a lightweight Async Reactive (AsyncRx) library for F#.
