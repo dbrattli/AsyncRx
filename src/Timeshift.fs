@@ -65,10 +65,9 @@ module internal Timeshift =
                             do! safeObv.OnNextAsync x
                             return index
                         | OnNext _, _ ->
-                            if index > currentIndex then
-                                return index
-                            else
-                                return currentIndex
+                            if index > currentIndex
+                            then return index
+                            else return currentIndex
                         | OnError ex, _ ->
                             do! safeObv.OnErrorAsync ex
                             return currentIndex

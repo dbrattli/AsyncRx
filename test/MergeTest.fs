@@ -7,7 +7,7 @@ open FSharp.Control
 open Expecto
 open Tests.Utils
 
-exception  MyError of string
+exception MyError of string
 
 [<Tests>]
 let tests = testList "Merge Tests" [
@@ -94,4 +94,28 @@ let tests = testList "Merge Tests" [
         Expect.contains actual (OnNext 5) "Should contain the element"
         Expect.contains actual (OnCompleted) "Should contain the element"
     }
+
+    testAsync "Test subscribe immediately" {
+         // Arrange
+         let obv, stream = AsyncRx.singleSubject<int> ()
+         let msgs =
+            Create.ofSeq [stream;  AsyncRx.empty () ] |> AsyncRx.mergeInner
+
+         let testObv = TestObserver<int>()
+
+         // Act
+         do! async {
+            let! subscription = msgs.SubscribeAsync testObv
+             //do! Async.Sleep 100 // uncomment this line and the test will pass
+            //printfn "subscribed!: %A" subscription
+            printfn "onnext "
+            do! obv.OnNextAsync 1
+            do! Async.Sleep 100
+            do! obv.OnCompletedAsync ()
+            do! testObv.AwaitIgnore ()
+            do! subscription.DisposeAsync ()
+         }
+         // Assert
+         Expect.sequenceEqual testObv.Notifications [OnNext 1; OnCompleted] "Should have received one OnNext and OnCompleted notifications"
+     }
 ]

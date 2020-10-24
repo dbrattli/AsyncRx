@@ -1,44 +1,43 @@
 module Tests.TakeUntil
 
-open System.Threading.Tasks
-open FSharp.Control.AsyncRx
-open FSharp.Control.AsyncRx.Streams
-
-open NUnit.Framework
-open FsUnit
+open FSharp.Control
+open FSharp.Control.Subjects
 open Tests.Utils
 
-exception  MyError of string
+open Expecto
 
-let toTask computation : Task = Async.StartAsTask computation :> _
+exception MyError of string
 
-[<Test>]
-let ``Test take until empty``() = toTask <| async {
-    // Arrange
-    let obvX, xs = stream<int> ()
-    let obvY, ys = stream<bool> ()
-    let zs = xs |> AsyncRx.takeUntil ys
+[<Tests>]
+let tests = testList "TakeUntil Tests" [
 
-    let obv = TestObserver<int>()
+    testAsync "Test takeUntil async" {
+        // Arrange
+        let obvX, xs = subject<int> ()
+        let obvY, ys = subject<bool> ()
+        let zs = xs |> AsyncRx.takeUntil ys
 
-    // Act
-    let! sub = zs.SubscribeAsync obv
-    do! Async.Sleep 100
-    do! obvX.OnNextAsync 1
-    do! obvX.OnNextAsync 2
-    do! obvY.OnNextAsync true
-    do! Async.Sleep 500
-    do! obvX.OnNextAsync 3
-    do! obvX.OnCompletedAsync ()
+        let obv = TestObserver<int>()
 
-    try
-        do! obv.AwaitIgnore ()
-    with
-    | _ -> ()
+        // Act
+        let! sub = zs.SubscribeAsync obv
+        do! Async.Sleep 100
+        do! obvX.OnNextAsync 1
+        do! obvX.OnNextAsync 2
+        do! obvY.OnNextAsync true
+        do! Async.Sleep 500
+        do! obvX.OnNextAsync 3
+        do! obvX.OnCompletedAsync ()
 
-    // Assert
-    obv.Notifications |> should haveCount 3
-    let actual = obv.Notifications |> Seq.toList
-    let expected = [ OnNext 1; OnNext 2; OnCompleted ]
-    Assert.That(actual, Is.EquivalentTo(expected))
-}
+        try
+            do! obv.AwaitIgnore ()
+        with
+        | _ -> ()
+
+        // Assert
+        Expect.equal obv.Notifications.Count 3 "Wrong count"
+        let actual = obv.Notifications |> Seq.toList
+        let expected = [ OnNext 1; OnNext 2; OnCompleted ]
+        Expect.containsAll actual expected "Should contain all"
+    }
+   ]

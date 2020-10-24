@@ -113,9 +113,9 @@ module internal Combine =
         Create.ofSeq(sources)
         |> mergeInner 1
 
-    type Notifications<'TSource, 'TOther> =
-    | Source of Notification<'TSource>
-    | Other of Notification<'TOther>
+    type private Notifications<'TSource, 'TOther> =
+        | Source of Notification<'TSource>
+        | Other of Notification<'TOther>
 
     /// Merges the specified observable sequences into one observable sequence by combining elements of the sources into
     /// tuples. Returns an observable sequence containing the combined results.

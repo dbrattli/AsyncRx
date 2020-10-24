@@ -31,7 +31,7 @@ module internal Create =
 
     /// Returns the async observable sequence whose single element is the result of the given async workflow.
     let ofAsync (workflow : Async<'TSource>)  : IAsyncObservable<'TSource> =
-        AsyncRx.ofAsyncWorker(fun obv _ -> async {
+        ofAsyncWorker(fun obv _ -> async {
             try
                 let! result = workflow
                 do! obv.OnNextAsync result

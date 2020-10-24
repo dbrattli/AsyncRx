@@ -17,6 +17,8 @@
     <Compile Include="BuilderTest.fs" />
     <Compile Include="CatchTest.fs" />
     <Compile Include="ScanTest.fs" />
+    <Compile Include="TakeUntilTest.fs" />
+
     <Compile Include="Main.fs" />
   </ItemGroup>
 

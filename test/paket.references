@@ -1,5 +1,6 @@
 group Test
     FSharp.Core
     coverlet.msbuild
+    YoloDev.Expecto.TestSdk
     Microsoft.NET.Test.Sdk
     Expecto
