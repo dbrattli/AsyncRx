@@ -7,10 +7,10 @@ open FSharp.Control.Core
 module internal Transform =
     /// Returns an observable sequence whose elements are the result of invoking the async mapper function on each
     /// element of the source.
-    let transformAsync<'TSource, 'TResult> (mapNextAsync: ('TResult -> Async<unit>) -> 'TSource -> Async<unit>) (source: IAsyncObservable<'TSource>) : IAsyncObservable<'TResult> =
+    let transformAsync<'TSource, 'TResult> (nextAsync: ('TResult -> Async<unit>) -> 'TSource -> Async<unit>) (source: IAsyncObservable<'TSource>) : IAsyncObservable<'TResult> =
         let subscribeAsync (aobv : IAsyncObserver<'TResult>) : Async<IAsyncRxDisposable> =
             { new IAsyncObserver<'TSource> with
-                member __.OnNextAsync x = mapNextAsync aobv.OnNextAsync x
+                member __.OnNextAsync x = nextAsync aobv.OnNextAsync x
                 member __.OnErrorAsync err = aobv.OnErrorAsync err
                 member __.OnCompletedAsync () = aobv.OnCompletedAsync ()
             }

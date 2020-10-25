@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Utils.fs" />
+    <Compile Include="GroupByTest.fs" />
     <Compile Include="ObserverTest.fs" />
     <Compile Include="CreateTest.fs" />
     <Compile Include="FilterTest.fs" />
@@ -18,6 +19,7 @@
     <Compile Include="CatchTest.fs" />
     <Compile Include="ScanTest.fs" />
     <Compile Include="TakeUntilTest.fs" />
+    <Compile Include="AsyncSeqTest.fs" />
 
     <Compile Include="Main.fs" />
   </ItemGroup>

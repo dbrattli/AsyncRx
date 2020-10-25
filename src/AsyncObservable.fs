@@ -82,6 +82,16 @@ module AsyncRx =
     let scanAsync (accumulator: 'a -> 'a -> Async<'a>) (source: IAsyncObservable<'a>) : IAsyncObservable<'a> =
         Aggregation.scanAsync accumulator source
 
+
+    let reduceAsync (accumulator: 'a -> 'a -> Async<'a>) (source: IAsyncObservable<'a>) : IAsyncObservable<'a> =
+        Aggregation.reduceAsync accumulator source
+
+    let max (source: IAsyncObservable<'a>) : IAsyncObservable<'a> =
+        Aggregation.max source
+
+    let min (source: IAsyncObservable<'a>) : IAsyncObservable<'a> =
+        Aggregation.min source
+
   // Combine Region
 
     /// Merges the specified observable sequences into one observable sequence by combining elements of the sources into

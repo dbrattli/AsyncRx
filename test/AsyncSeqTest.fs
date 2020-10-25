@@ -4,45 +4,50 @@ open System.Collections.Generic
 open System.Threading.Tasks
 
 open FSharp.Control
+open Expecto
 
-open NUnit.Framework
-open FsUnit
-open FSharp.Control
+open Tests.Utils
+
+
 
 let toTask computation : Task = Async.StartAsTask computation :> _
 
-[<Test>]
-let ``Test to async seq``() = toTask <| async {
-    let xs = seq { 1..5 } |> AsyncRx.ofSeq  |> AsyncRx.toAsyncSeq
-    let result = List<int> ()
+[<Tests>]
+let tests = testList "Async Seq Tests" [
 
-    let each x = async {
-        result.Add x
+    testAsync "Test to async seq" {
+        let xs = seq { 1..5 } |> AsyncRx.ofSeq  |> AsyncRx.toAsyncSeq
+        let result = List<int> ()
+
+        let each x = async {
+            result.Add x
+        }
+
+        // Act
+        do! xs |> AsyncSeq.iterAsync each
+
+        // Assert
+        Expect.equal result.Count 5 "Should match"
+        let expected = seq { 1..5 } |> Seq.toList
+        let result = result |> List.ofSeq
+        Expect.equal result expected "Should be equal"
     }
 
-    // Act
-    do! xs |> AsyncSeq.iterAsync each
+    testAsync "Test seq to async seq to async observerable to async seq" {
+        let xs = seq { 1..5 } |> AsyncSeq.ofSeq |> AsyncRx.ofAsyncSeq |> AsyncRx.toAsyncSeq
+        let result = List<int> ()
 
-    // Assert
-    result.Count |> should equal 5
-    let expected = seq { 1..5 } |> Seq.toList
-    Assert.That(result, Is.EquivalentTo(expected))
-}
+        let each x = async {
+            result.Add x
+        }
 
-[<Test>]
-let ``Test seq to async seq to async observerable to async seq``() = toTask <| async {
-    let xs = seq { 1..5 } |> AsyncSeq.ofSeq |> AsyncRx.ofAsyncSeq |> AsyncRx.toAsyncSeq
-    let result = List<int> ()
+        // Act
+        do! xs |> AsyncSeq.iterAsync each
 
-    let each x = async {
-        result.Add x
+        // Assert
+        Expect.equal result.Count 5 "Should match"
+        let expected = seq { 1..5 } |> Seq.toList
+        let result = result |> List.ofSeq
+        Expect.equal result expected "Should be equal"
     }
-
-    // Act
-    do! xs |> AsyncSeq.iterAsync each
-
-    // Assert
-    result.Count |> should equal 5
-    let expected = seq { 1..5 } |> Seq.toList
-    Assert.That(result, Is.EquivalentTo(expected))
-}
+]

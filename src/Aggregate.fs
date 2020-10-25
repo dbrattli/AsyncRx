@@ -1,7 +1,6 @@
 namespace FSharp.Control
 
 open System.Threading
-open FSharp.Control.Core
 
 [<RequireQualifiedAccess>]
  module internal Aggregation =
@@ -35,27 +34,42 @@ open FSharp.Control.Core
     let scanAsync (accumulator: 'TSource -> 'TSource -> Async<'TSource>) (source: IAsyncObservable<'TSource>) : IAsyncObservable<'TSource> =
         let subscribeAsync (aobv : IAsyncObserver<'TSource>) =
             let safeObv, autoDetach = autoDetachObserver aobv
-            let mutable states = None
+            let mutable aggregate = None
 
             let obv n =
                 async {
                     match n with
                     | OnNext x ->
-                        match states with
+                        match aggregate with
                         | Some state ->
                             try
                                 let! state' = accumulator state x
-                                states <- Some state'
+                                aggregate <- Some state'
                                 do! safeObv.OnNextAsync state
                             with
                             | err -> do! safeObv.OnErrorAsync err
                         | None ->
-                            states <- Some x
+                            aggregate <- Some x
                     | OnError e -> do! safeObv.OnErrorAsync e
                     | OnCompleted -> do! safeObv.OnCompletedAsync ()
                 }
             AsyncObserver obv |> source.SubscribeAsync |> autoDetach
         { new IAsyncObservable<'TSource> with member __.SubscribeAsync o = subscribeAsync o }
+
+
+    let reduceAsync (accumulator: 'TSource -> 'TSource -> Async<'TSource>) : Stream<'TSource, 'TSource> =
+        scanAsync accumulator
+        >=> Filter.takeLast 1
+
+    let foldAsync (initial: 'TState) (accumulator: 'TState -> 'TSource -> Async<'TState>) : Stream<'TSource, 'TState> =
+        scanInitAsync initial accumulator
+        >=> Filter.takeLast 1
+
+    let max<'TSource when 'TSource : comparison> : Stream<'TSource, 'TSource> =
+        reduceAsync (fun s n -> async { return max s n})
+
+    let min<'TSource when 'TSource : comparison> : Stream<'TSource, 'TSource> =
+        reduceAsync (fun s n -> async { return min s n})
 
 
     /// Groups the elements of an observable sequence according to a specified key mapper function. Returns a sequence
