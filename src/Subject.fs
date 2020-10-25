@@ -5,7 +5,7 @@ open System.Threading
 
 open FSharp.Control.Core
 
-module Subjects =
+module internal Subjects =
     /// A cold stream that only supports a single subscriber
     let singleSubject<'TSource> () : IAsyncObserver<'TSource> * IAsyncObservable<'TSource> =
         let mutable oobv: IAsyncObserver<'TSource> option = None

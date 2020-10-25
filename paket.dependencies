@@ -1,17 +1,22 @@
 group AsyncRx
+    source https://www.nuget.org/api/v2
+    framework: netstandard2.0
 
-source https://www.nuget.org/api/v2
-framework: netstandard2.1
+    nuget FSharp.Core ~> 5.0
 
-nuget FSharp.Core ~> 5.0
-nuget FSharp.Control.AsyncSeq
+group AsyncSeq
+    source https://www.nuget.org/api/v2
+    framework: netstandard2.1
+
+    nuget FSharp.Core ~> 5.0
+    nuget FSharp.Control.AsyncSeq
+    nuget FSharp.Control.AsyncRx
 
 group Test
-source https://www.nuget.org/api/v2
-framework: netcoreapp3.1
+    source https://www.nuget.org/api/v2
+    framework: netcoreapp3.1
 
-nuget coverlet.msbuild
-nuget FSharp.Control.AsyncSeq
-nuget Microsoft.NET.Test.Sdk
-nuget YoloDev.Expecto.TestSdk
-nuget Expecto
+    nuget coverlet.msbuild
+    nuget Microsoft.NET.Test.Sdk
+    nuget YoloDev.Expecto.TestSdk
+    nuget Expecto

@@ -32,5 +32,5 @@ Please check out the [documentation](https://dbrattli.github.io/Reaction/)
 ## Install
 
 ```cmd
-paket add FSharp.Control.AsyncRx --project <project>
+dotnet paket add FSharp.Control.AsyncRx --project <project>
 ```

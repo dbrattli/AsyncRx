@@ -4,7 +4,7 @@ open FSharp.Control
 open Expecto
 open Tests.Utils
 
-exception  MyError of string
+exception MyError of string
 
 [<Tests>]
 let tests = testList "GroupBy Tests" [
@@ -72,8 +72,11 @@ let tests = testList "GroupBy Tests" [
         // Assert
         Expect.equal obv.Notifications.Count 3 "Should be equal"
         let actual = obv.Notifications |> Seq.toList
-        let expected : Notification<int> list = [ OnNext 1; OnNext 2; OnCompleted ]
-        Expect.equal actual expected "Should be equal"
+        let expected = [
+            [ OnNext 1; OnNext 2; OnCompleted ]
+            [ OnNext 2; OnNext 1; OnCompleted ]
+        ]
+        Expect.contains expected actual  "Should be equal"
     }
 
     testAsync "Test groupby cancel" {

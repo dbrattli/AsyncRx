@@ -1,4 +1,4 @@
-module Tests.ToAsyncSeq
+module Tests.AsyncSeq
 
 open System.Collections.Generic
 open System.Threading.Tasks

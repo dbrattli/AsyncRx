@@ -5,7 +5,7 @@ open Expecto
 [<Tests>]
 let allTests =
     testList "all-tests" [
-        //AsyncSeq.tests
+        AsyncSeq.tests
         Bind.tests
         Catch.tests
         Concat.tests

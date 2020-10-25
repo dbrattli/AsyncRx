@@ -82,7 +82,6 @@ module AsyncRx =
     let scanAsync (accumulator: 'a -> 'a -> Async<'a>) (source: IAsyncObservable<'a>) : IAsyncObservable<'a> =
         Aggregation.scanAsync accumulator source
 
-
     let reduceAsync (accumulator: 'a -> 'a -> Async<'a>) (source: IAsyncObservable<'a>) : IAsyncObservable<'a> =
         Aggregation.reduceAsync accumulator source
 
@@ -169,12 +168,6 @@ module AsyncRx =
     let ofAsyncWorker (worker: IAsyncObserver<'a> -> CancellationToken -> Async<unit>) : IAsyncObservable<'a> =
         Create.ofAsyncWorker worker
 
-    #if !FABLE_COMPILER
-    /// Convert async sequence into an async observable.
-    let ofAsyncSeq (xs: AsyncSeq<'a>) : IAsyncObservable<'a> =
-        Create.ofAsyncSeq xs
-    #endif
-
     /// Returns the async observable sequence whose elements are pulled from the given enumerable sequence.
     let ofSeq (xs: seq<'a>) : IAsyncObservable<'a> =
         Create.ofSeq xs
@@ -229,13 +222,6 @@ module AsyncRx =
     let takeUntil (other: IAsyncObservable<'b>) (source: IAsyncObservable<'a>) : IAsyncObservable<'a> =
         Filter.takeUntil other source
 
-  // Leave Region
-    #if !FABLE_COMPILER
-    /// Convert async observable to async sequence, non-blocking. Producer will be awaited until item is consumed by the
-    /// async enumerator.
-    let toAsyncSeq (source: IAsyncObservable<'a>) : AsyncSeq<'a> =
-        Leave.toAsyncSeq source
-    #endif
 
   // Timeshift Region
 

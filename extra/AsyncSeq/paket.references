@@ -1,0 +1,3 @@
+group AsyncSeq
+    FSharp.Control.AsyncRx
+    FSharp.Control.AsyncSeq

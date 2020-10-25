@@ -1,9 +1,18 @@
 
 
 GROUP AsyncRx
+RESTRICTION: == netstandard2.0
+NUGET
+  remote: https://www.nuget.org/api/v2
+    FSharp.Core (5.0)
+
+GROUP AsyncSeq
 RESTRICTION: == netstandard2.1
 NUGET
   remote: https://www.nuget.org/api/v2
+    FSharp.Control.AsyncRx (1.5.2)
+      FSharp.Control.AsyncSeq (>= 3.0.2)
+      FSharp.Core (>= 5.0)
     FSharp.Control.AsyncSeq (3.0.2)
       FSharp.Core (>= 4.3.2)
     FSharp.Core (5.0)
@@ -16,8 +25,6 @@ NUGET
     Expecto (9.0.2)
       FSharp.Core (>= 4.6)
       Mono.Cecil (>= 0.11.2)
-    FSharp.Control.AsyncSeq (3.0.2)
-      FSharp.Core (>= 4.3.2)
     FSharp.Core (5.0)
     Microsoft.CodeCoverage (16.7.1)
     Microsoft.NET.Test.Sdk (16.7.1)

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>FSharp.Control.AsyncRx</PackageId>
     <Authors>Dag Brattli</Authors>
     <Company>Brattli Labs</Company>
@@ -14,7 +14,6 @@
     <Compile Include="AsyncObserver.fs" />
     <Compile Include="Subject.fs" />
     <Compile Include="Create.fs" />
-    <Compile Include="Leave.fs" />
     <Compile Include="Combine.fs" />
     <Compile Include="Transform.fs" />
     <Compile Include="Timeshift.fs" />

@@ -88,44 +88,6 @@ module internal Create =
             do! obv.OnCompletedAsync ()
         })
 
-#if !FABLE_COMPILER
-    /// Convert async sequence into an async observable.
-    let ofAsyncSeq (xs: AsyncSeq<'TSource>) : IAsyncObservable<'TSource> =
-        let subscribeAsync  (aobv : IAsyncObserver<'TSource>) : Async<IAsyncRxDisposable> =
-            let cancel, token = canceller ()
-
-            async {
-                let ie = xs.GetEnumerator ()
-
-                let rec loop () =
-                    async {
-                        let! result =
-                            async {
-                                try
-                                    let! value = ie.MoveNext ()
-                                    return Ok value
-                                with
-                                | ex -> return Error ex
-                            }
-
-                        match result with
-                        | Ok notification ->
-                            match notification with
-                            | Some x ->
-                                do! aobv.OnNextAsync x
-                                do! loop ()
-                            | None ->
-                                do! aobv.OnCompletedAsync ()
-                        | Error err ->
-                            do! aobv.OnErrorAsync err
-                    }
-
-                Async.StartImmediate (loop (), token)
-                return cancel
-            }
-        { new IAsyncObservable<'TSource> with member __.SubscribeAsync o = subscribeAsync o }
-#endif
-
     // Returns an observable sequence that invokes the specified factory function whenever a new observer subscribes.
     let defer (factory: unit -> IAsyncObservable<'TSource>) : IAsyncObservable<'TSource> =
         let subscribeAsync  (aobv : IAsyncObserver<'TSource>) : Async<IAsyncRxDisposable> =
