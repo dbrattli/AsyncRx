@@ -4,18 +4,18 @@ GROUP AsyncRx
 RESTRICTION: == netstandard2.0
 NUGET
   remote: https://www.nuget.org/api/v2
-    FSharp.Core (5.0)
+    FSharp.Core (4.7.2)
 
 GROUP AsyncSeq
 RESTRICTION: == netstandard2.1
 NUGET
   remote: https://www.nuget.org/api/v2
-    FSharp.Control.AsyncRx (1.5.2)
-      FSharp.Control.AsyncSeq (>= 3.0.2)
-      FSharp.Core (>= 5.0)
+    FSharp.Control.AsyncRx (1.4.1)
+      FSharp.Control.AsyncSeq (>= 2.0.23)
+      FSharp.Core (>= 4.7.1)
     FSharp.Control.AsyncSeq (3.0.2)
       FSharp.Core (>= 4.3.2)
-    FSharp.Core (5.0)
+    FSharp.Core (4.7.2)
 
 GROUP Test
 RESTRICTION: == netcoreapp3.1
