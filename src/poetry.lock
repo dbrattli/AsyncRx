@@ -1,0 +1,48 @@
+[[package]]
+name = "expression"
+version = "2.2.0"
+description = "Practical functional programming for Python 3.9+"
+category = "main"
+optional = false
+python-versions = ">=3.9,<3.11"
+
+[package.dependencies]
+typing-extensions = ">=4.1.1,<5.0.0"
+
+[[package]]
+name = "fable-library"
+version = "0.6.0"
+description = "Fable library for Python"
+category = "main"
+optional = false
+python-versions = ">=3.9,<3.11"
+
+[package.dependencies]
+expression = ">=2.2.0,<3.0.0"
+
+[[package]]
+name = "typing-extensions"
+version = "4.2.0"
+description = "Backported and Experimental Type Hints for Python 3.7+"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[metadata]
+lock-version = "1.1"
+python-versions = ">=3.9,<3.11"
+content-hash = "cb42ffa561050d326f11dc8c70b9b45a176d64747a525e634729f7d1ee381b34"
+
+[metadata.files]
+expression = [
+    {file = "Expression-2.2.0-py3-none-any.whl", hash = "sha256:b66ff9cf5e08b5ba99ed8013a30741f97bf13d62b3bcdf4fcf2368f71ab5f2fb"},
+    {file = "Expression-2.2.0.tar.gz", hash = "sha256:b703c2a3bf46fc7ff6fd585ccc3bc7b791b80b583a8e691f9049b651afd4a024"},
+]
+fable-library = [
+    {file = "fable-library-0.6.0.tar.gz", hash = "sha256:461828e4877838e1ec5dc2f0d07f6080426737e76c5daf4604c4b2ae6bf9f5a1"},
+    {file = "fable_library-0.6.0-py3-none-any.whl", hash = "sha256:648eec8c8ddead69c2274c5d4a122f6ae83ac8316069b546e17175953b74c609"},
+]
+typing-extensions = [
+    {file = "typing_extensions-4.2.0-py3-none-any.whl", hash = "sha256:6657594ee297170d19f67d55c05852a874e7eb634f4f753dbd667855e07c1708"},
+    {file = "typing_extensions-4.2.0.tar.gz", hash = "sha256:f1c24655a0da0d1b67f07e17a5e6b2a105894e6824b92096378bb3668ef02376"},
+]

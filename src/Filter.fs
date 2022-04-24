@@ -5,6 +5,7 @@ open FSharp.Control.Core
 
 [<RequireQualifiedAccess>]
 module internal Filter =
+
     /// Applies the given async function to each element of the stream and returns the stream comprised of the results
     /// for each element where the function returns Some with some value.
     let chooseAsync (chooser: 'TSource -> Async<'TResult option>) : Stream<'TSource, 'TResult> =

@@ -27,7 +27,7 @@
     <None Include="../LICENSE" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="*.fsproj; *.fs" PackagePath="fable\" />
+    <Content Include="pyproject.toml; *.fsproj; **\*.fs; **\*.fsi" PackagePath="fable\" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

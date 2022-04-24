@@ -7,7 +7,7 @@ module internal Combine =
     type Key = int
     type Model<'a> = {
         Subscriptions: Map<Key, IAsyncRxDisposable>
-        Queue: List<IAsyncObservable<'a>>
+        Queue: IAsyncObservable<'a> list
         IsStopped: bool
         Key: Key
     }
@@ -25,7 +25,7 @@ module internal Combine =
 
             let initialModel = {
                 Subscriptions = Map.empty
-                Queue = new List<IAsyncObservable<'TSource>> ()
+                Queue = []
                 IsStopped = false
                 Key = 0
             }
@@ -49,17 +49,15 @@ module internal Combine =
                                     let! inner = xs.SubscribeAsync (obv model.Key)
                                     return { model with Subscriptions = model.Subscriptions.Add (model.Key, inner); Key = model.Key + 1 }
                                 else
-                                    model.Queue.Add xs
-                                    return model
+                                    return { model with Queue = List.append model.Queue [ xs ]  }
                             | Msg.InnerCompleted key ->
                                 let subscriptions = model.Subscriptions.Remove key
 
-                                if model.Queue.Count > 0 then
-                                    let xs = model.Queue.[0]
-                                    model.Queue.RemoveAt 0
+                                if model.Queue.Length > 0 then
+                                    let xs = model.Queue.Head
                                     let! inner = xs.SubscribeAsync (obv model.Key)
 
-                                    return { model with Subscriptions = subscriptions.Add (model.Key, inner); Key = model.Key + 1 }
+                                    return { model with Subscriptions = subscriptions.Add (model.Key, inner); Key = model.Key + 1; Queue=List.tail model.Queue }
                                 else if subscriptions.Count > 0 then
                                     return { model with Subscriptions = subscriptions }
                                 else
@@ -163,10 +161,10 @@ module internal Combine =
             async {
                 let! dispose1 =
                     AsyncObserver (fun (n : Notification<'TSource>) -> async { Source n |> agent.Post })
-                    |> source.SubscribeAsync
+                    |> source.SubscribeAsync |> autoDetach
                 let! dispose2 =
                     AsyncObserver  (fun (n : Notification<'TOther>) -> async { Other n |> agent.Post })
-                    |> other.SubscribeAsync
+                    |> other.SubscribeAsync |> autoDetach
 
                 return AsyncDisposable.Composite [ dispose1; dispose2 ]
             }

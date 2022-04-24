@@ -59,11 +59,11 @@ open System.Threading
 
     let reduceAsync (accumulator: 'TSource -> 'TSource -> Async<'TSource>) : Stream<'TSource, 'TSource> =
         scanAsync accumulator
-        >=> Filter.takeLast 1
+        >> Filter.takeLast 1
 
     let foldAsync (initial: 'TState) (accumulator: 'TState -> 'TSource -> Async<'TState>) : Stream<'TSource, 'TState> =
         scanInitAsync initial accumulator
-        >=> Filter.takeLast 1
+        >> Filter.takeLast 1
 
     let max<'TSource when 'TSource : comparison> : Stream<'TSource, 'TSource> =
         reduceAsync (fun s n -> async { return max s n})

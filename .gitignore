@@ -3,3 +3,4 @@ src/obj
 .ionide
 extra/AsyncSeq/bin
 extra/AsyncSeq/obj
+build
