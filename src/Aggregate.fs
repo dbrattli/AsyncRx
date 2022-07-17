@@ -57,18 +57,18 @@ open System.Threading
         { new IAsyncObservable<'TSource> with member __.SubscribeAsync o = subscribeAsync o }
 
 
-    let reduceAsync (accumulator: 'TSource -> 'TSource -> Async<'TSource>) : Stream<'TSource, 'TSource> =
+    let reduceAsync (accumulator: 'TSource -> 'TSource -> Async<'TSource>) : AsyncStream<'TSource, 'TSource> =
         scanAsync accumulator
         >> Filter.takeLast 1
 
-    let foldAsync (initial: 'TState) (accumulator: 'TState -> 'TSource -> Async<'TState>) : Stream<'TSource, 'TState> =
+    let foldAsync (initial: 'TState) (accumulator: 'TState -> 'TSource -> Async<'TState>) : AsyncStream<'TSource, 'TState> =
         scanInitAsync initial accumulator
         >> Filter.takeLast 1
 
-    let max<'TSource when 'TSource : comparison> : Stream<'TSource, 'TSource> =
+    let max<'TSource when 'TSource : comparison> : AsyncStream<'TSource, 'TSource> =
         reduceAsync (fun s n -> async { return max s n})
 
-    let min<'TSource when 'TSource : comparison> : Stream<'TSource, 'TSource> =
+    let min<'TSource when 'TSource : comparison> : AsyncStream<'TSource, 'TSource> =
         reduceAsync (fun s n -> async { return min s n})
 
 

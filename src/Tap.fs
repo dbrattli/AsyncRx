@@ -30,11 +30,11 @@ module internal Tap =
         { new IAsyncObservable<'TSource> with member __.SubscribeAsync o = subscribeAsync o }
 
     /// Tap asynchronously into the stream performing side effects by the given `onNextAsync` action.
-    let tapOnNextAsync (onNextAsync: 'TSource -> Async<unit>) : Stream<'TSource> =
+    let tapOnNextAsync (onNextAsync: 'TSource -> Async<unit>) : AsyncStream<'TSource> =
         tapAsync onNextAsync Async.noop Async.noop
 
     /// Tap synchronously into the stream performing side effects by the given `onNext` action.
-    let tapOnNext (onNext: 'TSource -> unit) : Stream<'TSource> =
+    let tapOnNext (onNext: 'TSource -> unit) : AsyncStream<'TSource> =
         let onNextAsync x = async {
             onNext x
         }

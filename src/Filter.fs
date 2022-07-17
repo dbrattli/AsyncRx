@@ -8,7 +8,7 @@ module internal Filter =
 
     /// Applies the given async function to each element of the stream and returns the stream comprised of the results
     /// for each element where the function returns Some with some value.
-    let chooseAsync (chooser: 'TSource -> Async<'TResult option>) : Stream<'TSource, 'TResult> =
+    let chooseAsync (chooser: 'TSource -> Async<'TResult option>) : AsyncStream<'TSource, 'TResult> =
         Transform.transformAsync (fun next a -> async {
             match! chooser a with
             | Some b -> return! next b
@@ -17,7 +17,7 @@ module internal Filter =
 
     /// Applies the given function to each element of the stream and returns the stream comprised of the results for
     /// each element where the function returns Some with some value.
-    let choose (chooser: 'TSource -> 'TResult option) : Stream<'TSource, 'TResult> =
+    let choose (chooser: 'TSource -> 'TResult option) : AsyncStream<'TSource, 'TResult> =
         Transform.transformAsync (fun next a ->
             match chooser a with
             | Some b -> next b
@@ -26,7 +26,7 @@ module internal Filter =
 
     /// Filters the elements of an observable sequence based on an async predicate. Returns an observable sequence that
     /// contains elements from the input sequence that satisfy the condition.
-    let filterAsync (predicate: 'TSource -> Async<bool>) : Stream<'TSource> =
+    let filterAsync (predicate: 'TSource -> Async<bool>) : AsyncStream<'TSource> =
         Transform.transformAsync (fun next a -> async {
             match! predicate a with
             | true -> return! next a
@@ -36,7 +36,7 @@ module internal Filter =
 
     /// Filters the elements of an observable sequence based on a predicate. Returns an observable sequence that
     /// contains elements from the input sequence that satisfy the condition.
-    let filter (predicate: 'TSource -> bool) : Stream<'TSource> =
+    let filter (predicate: 'TSource -> bool) : AsyncStream<'TSource> =
         Transform.transformAsync (fun next a ->
             match predicate a with
             | true -> next a
