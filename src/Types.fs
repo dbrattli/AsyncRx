@@ -20,4 +20,3 @@ type Notification<'T> =
 
 type AsyncStream<'TSource, 'TResult> = IAsyncObservable<'TSource> -> IAsyncObservable<'TResult>
 type AsyncStream<'TSource> = AsyncStream<'TSource, 'TSource>
-
