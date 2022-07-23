@@ -49,6 +49,6 @@ module QueryBuilder =
 #if !FABLE_COMPILER
                 if Interlocked.CompareExchange(&x, 1, 0) = 0 then
 #endif
-                resource.DisposeAsync() |> Async.Start' // Dispose is best effort.
+                    resource.DisposeAsync() |> Async.Start' // Dispose is best effort.
 
             async.TryFinally(f resource, disposeFunction)
