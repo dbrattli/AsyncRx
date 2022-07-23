@@ -14,7 +14,7 @@ group AsyncSeq
 
 group Test
     source https://www.nuget.org/api/v2
-    framework: netcoreapp3.1
+    framework: net6.0
 
     nuget coverlet.msbuild
     nuget Microsoft.NET.Test.Sdk
