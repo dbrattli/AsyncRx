@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4"
-fable-library = "^0.6.0"
+fable-library = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 
