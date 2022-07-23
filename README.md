@@ -9,7 +9,7 @@
 FSharp.Control.AsyncRx is a library for asynchronous reactive
 programming, and is the implementation of Async Observables
 ([ReactiveX](http://reactivex.io/)) for F#. FSharp.Control.AsyncRx makes
-it easy to compose and combine streams of asynchronous event based data
+it easy to compose and combine streams of asynchronous event-based data
 such as timers, mouse-moves, keyboard input, web requests and enables
 you to do operations such as:
 

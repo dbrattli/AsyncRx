@@ -1,5 +1,9 @@
 packages
 src/obj
+src/bin
+test/bin
+test/obj
 .ionide
 extra/AsyncSeq/bin
 extra/AsyncSeq/obj
+build

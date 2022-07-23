@@ -17,7 +17,9 @@ let tests = testList "Map Tests" [
                 return x * 10
             }
 
-        let xs = AsyncRx.single 42 |> AsyncRx.mapAsync mapper
+        let xs =
+            AsyncRx.single 42
+            |> AsyncRx.mapAsync mapper
         let obv = TestObserver<int>()
 
         // Act
