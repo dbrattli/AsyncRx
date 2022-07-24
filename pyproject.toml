@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "AsyncRx"
-version = "1.6.1"
+name = "fsharp-control-async-rx"
+version = "1.6.2"
 description = "Async Observables for F# and Fable"
 authors = ["Dag Brattli <dag@brattli.net>"]
 license = "MIT"
