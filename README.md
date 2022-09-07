@@ -27,7 +27,7 @@ side for full stack software development.
 
 ## Documentation
 
-Please check out the [documentation](https://dbrattli.github.io/Reaction/)
+Please check out the [documentation](https://fablereaction.readthedocs.io/en/latest/asyncrx/index.html)
 
 ## Install
 
