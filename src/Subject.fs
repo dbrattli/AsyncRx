@@ -4,7 +4,6 @@ open System.Collections.Generic
 open System.Threading
 
 open FSharp.Control.Core
-open System
 
 module internal Subjects =
     /// A cold stream that only supports a single subscriber
