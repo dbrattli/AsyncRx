@@ -7,3 +7,4 @@ test/obj
 extra/AsyncSeq/bin
 extra/AsyncSeq/obj
 build
+/.vs/FSharp.Control.AsyncRx
