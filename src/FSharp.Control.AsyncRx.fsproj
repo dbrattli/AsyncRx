@@ -6,6 +6,7 @@
     <Company>Brattli Labs</Company>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>fsharp;fable;fable-library;fable-dotnet;fable-javascript;fable-python</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Types.fs" />
