@@ -25,7 +25,8 @@
     <Compile Include="Builder.fs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="../LICENSE" Pack="true" Visible="false" PackagePath=""/>
+    <None Include="..\LICENSE" Pack="true" Visible="false" PackagePath="\"/>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\pyproject.toml; *.fsproj; **\*.fs; **\*.fsi" PackagePath="fable\" />

@@ -64,21 +64,20 @@ module internal Subjects =
                         async {
                             let! n = inbox.Receive()
 
-                            for aobv in obvs do
-                                match n with
-                                | OnNext x ->
-                                    try
-                                        do! aobv.OnNextAsync x
-                                    with
-                                    | ex ->
-                                        do! aobv.OnErrorAsync ex
-                                        cts.Cancel()
-                                | OnError err ->
+                            match n with
+                            | OnNext x ->
+                                for aobv in obvs do
+                                    do! aobv.OnNextAsync x
+
+                            | OnError err ->
+                                for aobv in obvs do
                                     do! aobv.OnErrorAsync err
-                                    cts.Cancel()
-                                | OnCompleted ->
+                                cts.Cancel()
+
+                            | OnCompleted ->
+                                for aobv in obvs do
                                     do! aobv.OnCompletedAsync()
-                                    cts.Cancel()
+                                cts.Cancel()
 
                             return! messageLoop ()
                         }
