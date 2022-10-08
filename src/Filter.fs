@@ -49,7 +49,7 @@ module internal Filter =
             let safeObv, autoDetach = autoDetachObserver aobv
 
             let agent =
-                MailboxProcessor.Start (fun inbox ->
+                MailboxProcessor.Start(fun inbox ->
                     let rec messageLoop (latest: Notification<'TSource>) =
                         async {
                             let! n = inbox.Receive()
@@ -61,8 +61,8 @@ module internal Filter =
                                         if n <> latest then
                                             try
                                                 do! safeObv.OnNextAsync x
-                                            with
-                                            | ex -> do! safeObv.OnErrorAsync ex
+                                            with ex ->
+                                                do! safeObv.OnErrorAsync ex
                                     | OnError err -> do! safeObv.OnErrorAsync err
                                     | OnCompleted -> do! safeObv.OnCompletedAsync()
 
@@ -85,7 +85,7 @@ module internal Filter =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Bypasses a specified number of elements in an observable sequence and then returns the remaining elements.
     let skip (count: int) (source: IAsyncObservable<'TSource>) : IAsyncObservable<'TSource> =
@@ -114,7 +114,7 @@ module internal Filter =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Returns a specified number of contiguous elements from the start of an observable sequence.
     let take (count: int) (source: IAsyncObservable<'TSource>) : IAsyncObservable<'TSource> =
@@ -145,7 +145,7 @@ module internal Filter =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Returns a specified number of contiguous elements from the end of an observable sequence.
     let takeLast (count: int) (source: IAsyncObservable<'TSource>) : IAsyncObservable<'TSource> =
@@ -176,7 +176,7 @@ module internal Filter =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Returns the values from the source observable sequence until the other observable sequence produces a value.
     let takeUntil
@@ -189,7 +189,7 @@ module internal Filter =
             async {
                 let _obv (n: Notification<'TResult>) =
                     match n with
-                    | OnNext x -> safeObv.OnCompletedAsync()
+                    | OnNext _ -> safeObv.OnCompletedAsync()
                     | OnError ex -> safeObv.OnErrorAsync ex
                     | OnCompleted -> Async.empty
 
@@ -200,4 +200,4 @@ module internal Filter =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }

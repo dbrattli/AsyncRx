@@ -1,7 +1,5 @@
 namespace FSharp.Control
 
-open System.Collections.Generic
-
 [<RequireQualifiedAccess>]
 module internal Combine =
     type Key = int
@@ -33,21 +31,23 @@ module internal Combine =
                   Key = 0 }
 
             let agent =
-                MailboxProcessor.Start (fun inbox ->
+                MailboxProcessor.Start(fun inbox ->
                     let obv key =
                         { new IAsyncObserver<'TSource> with
-                            member __.OnNextAsync x = safeObv.OnNextAsync x
-                            member __.OnErrorAsync err = safeObv.OnErrorAsync err
+                            member _.OnNextAsync x = safeObv.OnNextAsync x
+                            member _.OnErrorAsync err = safeObv.OnErrorAsync err
 
-                            member __.OnCompletedAsync() =
+                            member _.OnCompletedAsync() =
                                 async { Msg.InnerCompleted key |> inbox.Post } }
 
                     let update msg model =
                         async {
                             match msg with
                             | Msg.InnerObservable xs ->
-                                if maxConcurrent = 0
-                                   || model.Subscriptions.Count < maxConcurrent then
+                                if
+                                    maxConcurrent = 0
+                                    || model.Subscriptions.Count < maxConcurrent
+                                then
                                     let! inner = xs.SubscribeAsync(obv model.Key)
 
                                     return
@@ -81,7 +81,7 @@ module internal Combine =
 
                                 return { model with IsStopped = true }
                             | Msg.Dispose ->
-                                for KeyValue (key, dispose) in model.Subscriptions do
+                                for KeyValue (_, dispose) in model.Subscriptions do
                                     do! dispose.DisposeAsync()
 
                                 return initialModel
@@ -123,11 +123,11 @@ module internal Combine =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Returns an observable sequence that contains the elements of each given sequences, in sequential order.
     let concatSeq (sources: seq<IAsyncObservable<'TSource>>) : IAsyncObservable<'TSource> =
-        Create.ofSeq (sources) |> mergeInner 1
+        Create.ofSeq sources |> mergeInner 1
 
     type private Notifications<'TSource, 'TOther> =
         | Source of Notification<'TSource>
@@ -143,7 +143,7 @@ module internal Combine =
             let safeObv, autoDetach = autoDetachObserver aobv
 
             let agent =
-                MailboxProcessor.Start (fun inbox ->
+                MailboxProcessor.Start(fun inbox ->
                     let rec messageLoop (source: option<'TSource>) (other: option<'TOther>) =
                         async {
                             let! cn = inbox.Receive()
@@ -195,13 +195,11 @@ module internal Combine =
                     |> other.SubscribeAsync
                     |> autoDetach
 
-                return
-                    AsyncDisposable.Composite [ dispose1
-                                                dispose2 ]
+                return AsyncDisposable.Composite [ dispose1; dispose2 ]
             }
 
         { new IAsyncObservable<'TSource * 'TOther> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Merges the specified observable sequences into one observable sequence by combining the values into tuples only
     /// when the first observable sequence produces an element. Returns the combined observable sequence.
@@ -213,7 +211,7 @@ module internal Combine =
             let safeObv, autoDetach = autoDetachObserver aobv
 
             let agent =
-                MailboxProcessor.Start (fun inbox ->
+                MailboxProcessor.Start(fun inbox ->
                     let rec messageLoop (latest: option<'TOther>) =
                         async {
                             let! cn = inbox.Receive()
@@ -265,13 +263,11 @@ module internal Combine =
                     |> source.SubscribeAsync
                     |> autoDetach
 
-                return
-                    AsyncDisposable.Composite [ dispose1
-                                                dispose2 ]
+                return AsyncDisposable.Composite [ dispose1; dispose2 ]
             }
 
         { new IAsyncObservable<'TSource * 'TOther> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     let zipSeq (sequence: seq<'TOther>) (source: IAsyncObservable<'TSource>) : IAsyncObservable<'TSource * 'TOther> =
         let subscribeAsync (aobv: IAsyncObserver<'TSource * 'TOther>) =
@@ -290,8 +286,8 @@ module internal Combine =
                                     do! safeObv.OnNextAsync b
                                 else
                                     do! safeObv.OnCompletedAsync()
-                            with
-                            | ex -> do! safeObv.OnErrorAsync ex
+                            with ex ->
+                                do! safeObv.OnErrorAsync ex
                         | OnError ex -> do! safeObv.OnErrorAsync ex
                         | OnCompleted -> do! safeObv.OnCompletedAsync()
 
@@ -304,4 +300,4 @@ module internal Combine =
             }
 
         { new IAsyncObservable<'TSource * 'TOther> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
