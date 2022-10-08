@@ -9,6 +9,7 @@ open FSharp.Control.Core
 [<AutoOpen>]
 module AsyncObservable =
     type IAsyncObservable<'TSource> with
+
         /// Repeat each element of the sequence n times Subscribes the async observer to the async observable, ignores
         /// the disposable
         member this.RunAsync(obv: IAsyncObserver<'TSource>) = this.SubscribeAsync obv |> Async.Ignore
@@ -32,6 +33,7 @@ module AsyncObservable =
 [<AutoOpen>]
 module Observable =
     type IObservable<'a> with
+
         /// Subscribes a dispatch function taking notifications.
         member this.Subscribe<'a>(dispatch: Notification<'a> -> unit) : IDisposable = this.Subscribe(Observer dispatch)
 
@@ -117,8 +119,7 @@ module AsyncRx =
     /// Prepends a sequence of values to an observable sequence. Returns the source sequence prepended with the
     /// specified values.
     let startWith (items: seq<'a>) (source: IAsyncObservable<'a>) =
-        Combine.concatSeq [ Create.ofSeq items
-                            source ]
+        Combine.concatSeq [ Create.ofSeq items; source ]
 
     /// Merges the specified observable sequences into one observable sequence by combining the values into tuples only
     /// when the first observable sequence produces an element. Returns the combined observable sequence.

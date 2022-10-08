@@ -13,13 +13,13 @@ module internal Transform =
         : IAsyncObservable<'TResult> =
         let subscribeAsync (aobv: IAsyncObserver<'TResult>) : Async<IAsyncRxDisposable> =
             { new IAsyncObserver<'TSource> with
-                member __.OnNextAsync x = nextAsync aobv.OnNextAsync x
-                member __.OnErrorAsync err = aobv.OnErrorAsync err
-                member __.OnCompletedAsync() = aobv.OnCompletedAsync() }
+                member _.OnNextAsync x = nextAsync aobv.OnNextAsync x
+                member _.OnErrorAsync err = aobv.OnErrorAsync err
+                member _.OnCompletedAsync() = aobv.OnCompletedAsync() }
             |> source.SubscribeAsync
 
         { new IAsyncObservable<'TResult> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Returns an observable sequence whose elements are the result of invoking the async mapper function on each
     /// element of the source.
@@ -86,16 +86,16 @@ module internal Transform =
             let innerAgent =
                 let obv (mb: MailboxProcessor<InnerSubscriptionCmd<'TSource>>) (id: int) =
                     { new IAsyncObserver<'TSource> with
-                        member __.OnNextAsync x = safeObv.OnNextAsync x
-                        member __.OnErrorAsync err = safeObv.OnErrorAsync err
-                        member __.OnCompletedAsync() = async { mb.Post(InnerCompleted id) } }
+                        member _.OnNextAsync x = safeObv.OnNextAsync x
+                        member _.OnErrorAsync err = safeObv.OnErrorAsync err
+                        member _.OnCompletedAsync() = async { mb.Post(InnerCompleted id) } }
 
-                MailboxProcessor.Start (fun inbox ->
+                MailboxProcessor.Start(fun inbox ->
                     let rec messageLoop (current: IAsyncRxDisposable option, isStopped, currentId) =
                         async {
                             let! cmd = inbox.Receive()
 
-                            let! (current', isStopped', currentId') =
+                            let! current', isStopped', currentId' =
                                 async {
                                     match cmd with
                                     | InnerObservable xs ->
@@ -153,7 +153,7 @@ module internal Transform =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Asynchronosly transforms the items emitted by an source sequence into observable streams, and mirror those items
     /// emitted by the most-recently transformed observable sequence.
@@ -181,13 +181,13 @@ module internal Transform =
                     async {
                         let _obv =
                             { new IAsyncObserver<'TSource> with
-                                member __.OnNextAsync x = aobv.OnNextAsync x
+                                member _.OnNextAsync x = aobv.OnNextAsync x
 
-                                member __.OnErrorAsync err =
+                                member _.OnErrorAsync err =
                                     let nextSource = handler err
                                     action nextSource
 
-                                member __.OnCompletedAsync() = aobv.OnCompletedAsync() }
+                                member _.OnCompletedAsync() = aobv.OnCompletedAsync() }
 
                         do! disposable.DisposeAsync()
                         let! subscription = source.SubscribeAsync _obv
@@ -200,7 +200,7 @@ module internal Transform =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     let retry (retryCount: int) (source: IAsyncObservable<'TSource>) =
         let mutable count = retryCount
@@ -225,7 +225,7 @@ module internal Transform =
         let dispatch, stream = Subjects.subject<'TSource> ()
 
         let mb =
-            MailboxProcessor.Start (fun inbox ->
+            MailboxProcessor.Start(fun inbox ->
                 let rec messageLoop (count: int) (subscription: IAsyncRxDisposable) =
                     async {
                         let! cmd = inbox.Receive()
@@ -266,13 +266,13 @@ module internal Transform =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     let toObservable (source: IAsyncObservable<'TSource>) : IObservable<'TSource> =
         let mutable subscription: IAsyncRxDisposable = AsyncDisposable.Empty
 
         { new IObservable<'TSource> with
-            member __.Subscribe obv =
+            member _.Subscribe obv =
                 async {
                     let aobv = obv.ToAsyncObserver()
                     let! disposable = source.SubscribeAsync aobv

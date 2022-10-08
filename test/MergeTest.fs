@@ -106,9 +106,6 @@ let tests = testList "Merge Tests" [
          // Act
          do! async {
             let! subscription = msgs.SubscribeAsync testObv
-             //do! Async.Sleep 100 // uncomment this line and the test will pass
-            //printfn "subscribed!: %A" subscription
-            printfn "onnext "
             do! obv.OnNextAsync 1
             do! Async.Sleep 100
             do! obv.OnCompletedAsync ()

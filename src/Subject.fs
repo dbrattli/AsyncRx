@@ -37,8 +37,8 @@ module internal Subjects =
                     | OnNext x ->
                         try
                             do! obv.OnNextAsync x
-                        with
-                        | ex -> do! obv.OnErrorAsync ex
+                        with ex ->
+                            do! obv.OnErrorAsync ex
                     | OnError e -> do! obv.OnErrorAsync e
                     | OnCompleted -> do! obv.OnCompletedAsync()
                 | None ->
@@ -72,11 +72,13 @@ module internal Subjects =
                             | OnError err ->
                                 for aobv in obvs do
                                     do! aobv.OnErrorAsync err
+
                                 cts.Cancel()
 
                             | OnCompleted ->
                                 for aobv in obvs do
                                     do! aobv.OnCompletedAsync()
+
                                 cts.Cancel()
 
                             return! messageLoop ()

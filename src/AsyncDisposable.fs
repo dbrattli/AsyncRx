@@ -69,11 +69,13 @@ type Disposable(cancel) =
 [<AutoOpen>]
 module AsyncDisposable =
     type IAsyncRxDisposable with
+
         member this.ToDisposable() =
             { new IDisposable with
                 member __.Dispose() = this.DisposeAsync() |> Async.Start' }
 
     type System.IDisposable with
+
         member this.ToAsyncDisposable() : IAsyncRxDisposable =
             AsyncDisposable.Create(fun () -> async { this.Dispose() })
 

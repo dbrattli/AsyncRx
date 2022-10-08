@@ -24,7 +24,9 @@ module internal Timeshift =
 
                                 let diff: TimeSpan = dueTime - DateTime.UtcNow
                                 let msecs = Convert.ToInt32 diff.TotalMilliseconds
-                                if msecs > 0 then do! Async.Sleep msecs
+
+                                if msecs > 0 then
+                                    do! Async.Sleep msecs
 
                                 match n with
                                 | OnNext x -> do! aobv.OnNextAsync x
@@ -60,7 +62,7 @@ module internal Timeshift =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Ignores values from an observable sequence which are followed by
     /// another value before the given timeout.
@@ -70,7 +72,7 @@ module internal Timeshift =
             let infinite = Seq.initInfinite id
 
             let agent =
-                MailboxProcessor.Start (fun inbox ->
+                MailboxProcessor.Start(fun inbox ->
                     let rec messageLoop currentIndex =
                         async {
                             let! n, index = inbox.Receive()
@@ -133,7 +135,7 @@ module internal Timeshift =
             }
 
         { new IAsyncObservable<'TSource> with
-            member __.SubscribeAsync o = subscribeAsync o }
+            member _.SubscribeAsync o = subscribeAsync o }
 
     /// Samples the observable sequence at each interval.
     let sample msecs (source: IAsyncObservable<'TSource>) : IAsyncObservable<'TSource> =

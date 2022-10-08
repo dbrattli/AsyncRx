@@ -24,8 +24,8 @@ module internal Aggregation =
                             let! state' = accumulator state x
                             state <- state'
                             do! safeObv.OnNextAsync state
-                        with
-                        | err -> do! safeObv.OnErrorAsync err
+                        with err ->
+                            do! safeObv.OnErrorAsync err
                     | OnError e -> do! safeObv.OnErrorAsync e
                     | OnCompleted -> do! safeObv.OnCompletedAsync()
                 }
@@ -58,8 +58,8 @@ module internal Aggregation =
                                 let! state' = accumulator state x
                                 aggregate <- Some state'
                                 do! safeObv.OnNextAsync state
-                            with
-                            | err -> do! safeObv.OnErrorAsync err
+                            with err ->
+                                do! safeObv.OnErrorAsync err
                         | None -> aggregate <- Some x
                     | OnError e -> do! safeObv.OnErrorAsync e
                     | OnCompleted -> do! safeObv.OnCompletedAsync()

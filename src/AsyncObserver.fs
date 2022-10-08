@@ -24,6 +24,7 @@ type Observer<'T>(fn: Notification<'T> -> unit) =
 [<AutoOpen>]
 module AsyncObserver =
     type IAsyncObserver<'T> with
+
         /// Convert async observer (IAsyncObserver) to an observer (IObserver).
         member this.ToObserver() =
             { new IObserver<'T> with
@@ -32,6 +33,7 @@ module AsyncObserver =
                 member __.OnCompleted() = this.OnCompletedAsync() |> Async.Start' }
 
     type IObserver<'T> with
+
         /// Convert observer (IObserver) to an async observer (IAsyncObserver).
         member this.ToAsyncObserver() =
             { new IAsyncObserver<'T> with
@@ -43,7 +45,7 @@ module AsyncObserver =
     /// (OnNext* (OnError|OnCompleted)?) is not violated.
     let safeObserver (obv: IAsyncObserver<'TSource>) (disposable: IAsyncRxDisposable) : IAsyncObserver<'TSource> =
         let agent =
-            MailboxProcessor.Start (fun inbox ->
+            MailboxProcessor.Start(fun inbox ->
                 let rec messageLoop stopped =
                     async {
                         let! n = inbox.Receive()
@@ -58,8 +60,7 @@ module AsyncObserver =
                                     try
                                         do! obv.OnNextAsync x
                                         return false
-                                    with
-                                    | ex ->
+                                    with ex ->
                                         do! obv.OnErrorAsync ex
                                         return true
                                 | OnError ex ->

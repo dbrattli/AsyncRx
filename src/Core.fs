@@ -6,6 +6,7 @@ module Core =
     let infinite = Seq.initInfinite id
 
     type Async with
+
         /// Starts the asynchronous computation in the thread pool, or
         /// immediately for Fable. Do not await its result. If no cancellation
         /// token is provided then the default cancellation token is used.

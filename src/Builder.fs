@@ -42,13 +42,16 @@ module QueryBuilder =
 
     /// We extend AsyncBuilder to use `use!` for resource managemnt when using async builder.
     type AsyncBuilder with
+
         member builder.Using(resource: #IAsyncRxDisposable, f: #IAsyncRxDisposable -> Async<'TSource>) =
             let mutable x = 0
 
             let disposeFunction _ =
 #if !FABLE_COMPILER
                 if Interlocked.CompareExchange(&x, 1, 0) = 0 then
-#endif
                     resource.DisposeAsync() |> Async.Start' // Dispose is best effort.
+#else
+                resource.DisposeAsync() |> Async.Start' // Dispose is best effort.
+#endif
 
             async.TryFinally(f resource, disposeFunction)

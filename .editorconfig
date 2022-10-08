@@ -1,3 +1,7 @@
+# Fantomas (see https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md)
 [*.fs]
 max_line_length=120
+#fsharp_multiline_block_brackets_on_same_column = true
+#fsharp_experimental_stroustrup_style = true
+fsharp_max_infix_operator_expression = 50
 insert_final_newline=true
