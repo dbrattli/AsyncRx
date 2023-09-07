@@ -150,15 +150,10 @@ module internal Subjects =
         | Dequeue of AsyncReplyChannel<'a>
         | IterAsync of ('a -> Async<unit>)
 
-    type private BufferedMessage<'Value> = 
-        | Next of 'Value
-        | Complete
-        | Error of exn
-
     let mbReplaySubject<'TSource> (bufferSize : int) : MailboxProcessor<Notification<'TSource>> * IAsyncObservable<'TSource> =
         let obvs = new List<IAsyncObserver<'TSource>>()
         let cts = new CancellationTokenSource()
-        let queue = new SafeQueue<BufferedMessage<'TSource>> ()
+        let queue = new SafeQueue<Notification<'TSource>> ()
         let mb =
             MailboxProcessor.Start(
                 fun inbox ->
@@ -170,14 +165,14 @@ module internal Subjects =
                             | OnNext x ->
                                 if queue.Count () < bufferSize then ()
                                 else queue.Dequeue() |> ignore 
-                                queue.Enqueue (BufferedMessage.Next x)
+                                queue.Enqueue (Notification.OnNext x)
 
                                 for aobv in obvs do
                                     do! aobv.OnNextAsync x
 
                             | OnError err ->
                                 for aobv in obvs do
-                                    queue.Enqueue (BufferedMessage.Error err)
+                                    queue.Enqueue (Notification.OnError err)
                                     do! aobv.OnErrorAsync err
 
                                 cts.Cancel()
@@ -185,7 +180,7 @@ module internal Subjects =
                             | OnCompleted ->
                                 for aobv in obvs do
                                     do! aobv.OnCompletedAsync()
-                                    queue.Enqueue BufferedMessage.Complete
+                                    queue.Enqueue Notification.OnCompleted
 
                                 cts.Cancel()
 
@@ -200,9 +195,9 @@ module internal Subjects =
             async {
                 let sobv = safeObserver aobv AsyncDisposable.Empty
                 queue.IterAsync (function 
-                    | BufferedMessage.Next n -> sobv.OnNextAsync n
-                    | BufferedMessage.Error exn -> sobv.OnErrorAsync exn
-                    | BufferedMessage.Complete -> sobv.OnCompletedAsync ())
+                    | Notification.OnNext n -> sobv.OnNextAsync n
+                    | Notification.OnError exn -> sobv.OnErrorAsync exn
+                    | Notification.OnCompleted -> sobv.OnCompletedAsync ())
 
                 obvs.Add sobv
 
