@@ -7,21 +7,21 @@ open FSharp.Control
 module AsyncRx =
     /// Convert async sequence into an async observable.
     let ofAsyncSeq (xs: AsyncSeq<'TSource>) : IAsyncObservable<'TSource> =
-        let subscribeAsync  (aobv : IAsyncObserver<'TSource>) : Async<IAsyncRxDisposable> =
+        let subscribeAsync (aobv: IAsyncObserver<'TSource>) : Async<IAsyncRxDisposable> =
             let cancel, token = canceller ()
 
             async {
-                let ie = xs.GetEnumerator ()
+                let ie = xs.GetEnumerator()
 
                 let rec loop () =
                     async {
                         let! result =
                             async {
                                 try
-                                    let! value = ie.MoveNext ()
+                                    let! value = ie.MoveNext()
                                     return Ok value
-                                with
-                                | ex -> return Error ex
+                                with ex ->
+                                    return Error ex
                             }
 
                         match result with
@@ -30,16 +30,16 @@ module AsyncRx =
                             | Some x ->
                                 do! aobv.OnNextAsync x
                                 do! loop ()
-                            | None ->
-                                do! aobv.OnCompletedAsync ()
-                        | Error err ->
-                            do! aobv.OnErrorAsync err
+                            | None -> do! aobv.OnCompletedAsync()
+                        | Error err -> do! aobv.OnErrorAsync err
                     }
 
-                Async.StartImmediate (loop (), token)
+                Async.StartImmediate(loop (), token)
                 return cancel
             }
-        { new IAsyncObservable<'TSource> with member __.SubscribeAsync o = subscribeAsync o }
+
+        { new IAsyncObservable<'TSource> with
+            member __.SubscribeAsync o = subscribeAsync o }
 
 
     /// Convert async observable to async sequence, non-blocking. Producer will be awaited until item is consumed by the
@@ -62,14 +62,15 @@ module AsyncRx =
 
             while running do
                 do! Async.AwaitWaitHandle ping |> Async.Ignore
+
                 match latest with
                 | OnNext x -> yield x
                 | OnError ex ->
                     running <- false
                     raise ex
                 | OnCompleted -> running <- false
+
                 pong.Set() |> ignore
 
             do! dispose.DisposeAsync()
         }
-
