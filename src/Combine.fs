@@ -55,7 +55,9 @@ module internal Combine =
                                             Subscriptions = model.Subscriptions.Add(model.Key, inner)
                                             Key = model.Key + 1 }
                                 else
-                                    return { model with Queue = List.append model.Queue [ xs ] }
+                                    return
+                                        { model with
+                                            Queue = List.append model.Queue [ xs ] }
                             | Msg.InnerCompleted key ->
                                 let subscriptions = model.Subscriptions.Remove key
 
@@ -69,7 +71,9 @@ module internal Combine =
                                             Key = model.Key + 1
                                             Queue = List.tail model.Queue }
                                 else if subscriptions.Count > 0 then
-                                    return { model with Subscriptions = subscriptions }
+                                    return
+                                        { model with
+                                            Subscriptions = subscriptions }
                                 else
                                     if model.IsStopped then
                                         do! safeObv.OnCompletedAsync()
@@ -81,7 +85,7 @@ module internal Combine =
 
                                 return { model with IsStopped = true }
                             | Msg.Dispose ->
-                                for KeyValue (_, dispose) in model.Subscriptions do
+                                for KeyValue(_, dispose) in model.Subscriptions do
                                     do! dispose.DisposeAsync()
 
                                 return initialModel
